@@ -6,15 +6,15 @@ public class PlayerColliderController : MonoBehaviour {
     public Vector3 HeadDimensions = new Vector3(0.15f, 0.25f, 0.15f);
     public AudioClip ScreamClip;
     public AudioClip HitClip;
-    public DamageFlashController flash;
 
     private Rigidbody rb;
     private BoxCollider col;
     private AudioSource scream;
     private AudioSource hit;
+    private DamageFlashController flash;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         rb = gameObject.AddComponent<Rigidbody>();
         rb.isKinematic = true;
         rb.useGravity = false;
@@ -28,6 +28,8 @@ public class PlayerColliderController : MonoBehaviour {
         scream.clip = ScreamClip;
         hit = gameObject.AddComponent<AudioSource>();
         hit.clip = HitClip;
+
+        flash = GetComponent<DamageFlashController>();
 	}
 	
 	void OnTriggerEnter(Collider other) {
