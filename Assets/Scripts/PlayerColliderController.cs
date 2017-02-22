@@ -6,6 +6,7 @@ public class PlayerColliderController : MonoBehaviour {
     public Vector3 HeadDimensions = new Vector3(0.15f, 0.25f, 0.15f);
     public AudioClip ScreamClip;
     public AudioClip HitClip;
+    public float volume = 0.5f;
 
     private Rigidbody rb;
     private BoxCollider col;
@@ -26,8 +27,10 @@ public class PlayerColliderController : MonoBehaviour {
 
         scream = gameObject.AddComponent<AudioSource>();
         scream.clip = ScreamClip;
+        scream.volume = volume;
         hit = gameObject.AddComponent<AudioSource>();
         hit.clip = HitClip;
+        hit.volume = volume;
 
         flash = GetComponent<DamageFlashController>();
 	}
