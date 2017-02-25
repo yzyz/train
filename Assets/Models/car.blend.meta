@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 8b1046582460dcd4eb6037dede2f6eeb
-timeCreated: 1487645059
+guid: 592b7949d6b5c1c40a99dce822237a57
+timeCreated: 1487929952
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -9,7 +9,7 @@ ModelImporter:
     400000: //RootNode
     2300000: //RootNode
     3300000: //RootNode
-    4300000: Cylinder
+    4300000: Car
     7400000: Default Take
     9500000: //RootNode
   materials:
@@ -41,7 +41,7 @@ ModelImporter:
     addColliders: 0
     importBlendShapes: 1
     swapUVChannels: 0
-    generateSecondaryUV: 0
+    generateSecondaryUV: 1
     useFileUnits: 1
     optimizeMeshForGPU: 1
     keepQuads: 0
@@ -52,7 +52,7 @@ ModelImporter:
     secondaryUVPackMargin: 4
     useFileScale: 1
   tangentSpace:
-    normalSmoothAngle: 90
+    normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
   importAnimation: 1
