@@ -37,6 +37,7 @@ public class MouseControl : MonoBehaviour {
 	void Start () {
 		cam = Camera.main;
 		globeState = GlobeState.IDLE;
+		spinScript.globeState = (GlobeControl.GlobeState) GlobeState.IDLE;
 		spinScript = globe.GetComponent<GlobeControl>();
 
 		rots = new LinkedList<Quaternion> ();
@@ -83,6 +84,7 @@ public class MouseControl : MonoBehaviour {
 			movementDeltaTime = Time.time - times.First.Value;
 			angleScale = 1;
 			globeState = GlobeState.MOVING;
+			spinScript.globeState = (GlobeControl.GlobeState) GlobeState.MOVING;
 		}
 
 		// Handle movement from previous momentum
@@ -91,6 +93,7 @@ public class MouseControl : MonoBehaviour {
 			// Check if we've stopped
 			if (angleScale <= tolerance) {
 				globeState = GlobeState.STOPPED;
+				spinScript.globeState = (GlobeControl.GlobeState) GlobeState.STOPPED;
 				storedTime = Time.time;
 			}
 
@@ -101,6 +104,7 @@ public class MouseControl : MonoBehaviour {
 		} else if (globeState == GlobeState.STOPPED) {
 			if (Time.time - storedTime > waitTime) {
 				globeState = GlobeState.IDLE;
+				spinScript.globeState = (GlobeControl.GlobeState) GlobeState.IDLE;
 				//spinScript.StartSpin ();
 			}
 		}

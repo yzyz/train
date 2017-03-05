@@ -21,7 +21,7 @@ public class GlobeControl : MonoBehaviour {
 	public float acceleration = .05f;
 
 	/* Objects and Components */
-	private GlobeState globeState;
+	public GlobeState globeState;
 	private GlobeControl spinScript;
 	private GameObject activeController;
 
