@@ -105,10 +105,13 @@ public class GlobeControl : MonoBehaviour {
 			
 	}
 
-	public void OnTriggerStay(Collider other) {
+	void OnTriggerStay(Collider other) {
 		// TODO: put in check that it's a controller that triggered it
+        if (!other.tag.Equals("GameController")) {
+            return;
+        }
 
-		SteamVR_TrackedObject trackedObj = other.gameObject.GetComponent<SteamVR_TrackedObject> ();
+		SteamVR_TrackedObject trackedObj = other.GetComponentInParent<SteamVR_TrackedObject> ();
 		SteamVR_Controller.Device device = SteamVR_Controller.Input ((int)trackedObj.index);
 
 		// We're in range and we've hit the trigger
@@ -123,8 +126,9 @@ public class GlobeControl : MonoBehaviour {
 			times.Clear ();
 
 			// Set variables
-			activeController = other.gameObject;
+			activeController = other.transform.parent.gameObject;
 			globeState = GlobeState.DRAGGING;
+            currSpeed = 0;
 
 		}
 	}
