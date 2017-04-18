@@ -42,7 +42,8 @@ public class HydraHead : MonoBehaviour {
 	void Start () {
         segments = new GameObject[numSegments];
         for (int i = 0; i < numSegments; i++) {
-            Transform parent = i > 0 ? segments[i - 1].transform : transform;
+            //Transform parent = i > 0 ? segments[i - 1].transform : transform;
+            Transform parent = transform;
             segments[i] = Instantiate(segmentPrefab, parent.position + segmentLength * parent.forward,
                                       parent.rotation, parent);
             SnakeSegment seg = segments[i].GetComponent<SnakeSegment>();
@@ -117,11 +118,12 @@ public class HydraHead : MonoBehaviour {
                 t = 0;
                 if (status == Status.CUT) {
                     GameObject cutObj = segments[cut].transform.parent.gameObject;
-                    segments[cut].transform.parent = cut > 0 ? segments[cut - 1].transform : transform;
-                    Destroy(cutObj);
+                    //segments[cut].transform.parent = cut > 0 ? segments[cut - 1].transform : transform;
                     for (int i = cut; i < numSegments; i++) {
+                        segments[i].transform.parent = transform;
                         segments[i].SetActive(false);
                     }
+                    Destroy(cutObj);
                     state = State.REGENERATING;
                 } else {
                     state = State.WAITING;
@@ -129,6 +131,8 @@ public class HydraHead : MonoBehaviour {
             }
         }
         else if (state == State.REGENERATING) {
+            targetObject.transform.position = waitTarget.transform.position;
+            targetObject.transform.LookAt(player.transform);
             segments[cut].SetActive(true);
             ss.SetSegment(segments, cut);
             Vector3 targetPos = segments[cut].transform.position;
@@ -163,7 +167,9 @@ public class HydraHead : MonoBehaviour {
         cutObj.transform.position = segments[i].transform.position;
         Rigidbody rb = cutObj.AddComponent<Rigidbody>();
 
-        segments[i].transform.parent = cutObj.transform;
+        for (int j = cut; j < numSegments; j++) {
+            segments[j].transform.parent = cutObj.transform;
+        }
 
         rb.velocity = 10 * segments[i].transform.forward;
     }
