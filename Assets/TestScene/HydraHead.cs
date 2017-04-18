@@ -18,6 +18,7 @@ public class HydraHead : MonoBehaviour {
 
     public GameObject targetObject;
     public GameObject waitTarget;
+    public GameObject attackTarget;
     public GameObject player;
 
     public int id;
@@ -91,24 +92,27 @@ public class HydraHead : MonoBehaviour {
                 t = 0;
                 if (status == Status.ALIVE) {
                     state = State.ATTACKING;
+                    attackTarget.transform.position = player.transform.position;
                 }
             }
         }
         else if (state == State.ATTACKING) {
             targetObject.transform.position = Vector3.Lerp(waitTarget.transform.position, 
-                                                           player.transform.position, 
+                                                           attackTarget.transform.position, 
                                                            t / attackTime);
-            targetObject.transform.LookAt(player.transform);
+            targetObject.transform.LookAt(attackTarget.transform);
             if (t > attackTime) {
                 t = 0;
                 state = State.RETREATING;
             }
         }
         else if (state == State.RETREATING) {
-            targetObject.transform.position = Vector3.Lerp(player.transform.position,
+            targetObject.transform.position = Vector3.Lerp(attackTarget.transform.position,
                                                            waitTarget.transform.position,
                                                            t / retreatTime);
-            targetObject.transform.LookAt(player.transform);
+            Quaternion attackRot = Quaternion.LookRotation(attackTarget.transform.position - targetObject.transform.position);
+            Quaternion playerRot = Quaternion.LookRotation(player.transform.position - targetObject.transform.position);
+            targetObject.transform.rotation = Quaternion.Slerp(attackRot, playerRot, t / retreatTime);
             if (t > retreatTime) {
                 t = 0;
                 if (status == Status.CUT) {
