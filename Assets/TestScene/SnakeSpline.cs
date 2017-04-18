@@ -14,6 +14,7 @@ public class SnakeSpline {
     private HydraHead hh;
     private float[] t;
     private Vector3[] x;
+    private Quaternion[] r;
     
     public SnakeSpline(HydraHead h) {
         hh = h;
@@ -23,6 +24,7 @@ public class SnakeSpline {
         tangentWeight = hh.tangentWeight;
         t = new float[numSegments + 1];
         x = new Vector3[numSegments + 1];
+        r = new Quaternion[numSegments];
     }
     
     public void Update() {
@@ -41,18 +43,41 @@ public class SnakeSpline {
             t[i] = (lo + hi) / 2;
             x[i] = GetHermitePoint(t[i]);
         }
-
-        /*
+        
+        // calculate rotations
         for (int i = 0; i < numSegments; i++) {
-            segments[i].transform.position = (x[i] + x[i + 1]) / 2;
-            segments[i].transform.LookAt(x[i + 1]);
+            if (x[i + 1] == x[i]) {
+                r[i] = hh.transform.rotation;
+            }
+            else {
+                Vector3 up = hh.transform.up;
+                if (i > 0) {
+                    up = r[i - 1] * up;
+                }
+                r[i] = Quaternion.LookRotation(x[i + 1] - x[i], up);
+            }
         }
-        */
+        // now to fix final z-rotation...
+        // first we calculate how much we need to rotate the head around its local z-axis so it is upright
+        Vector3 curRight = r[numSegments - 1] * Vector3.right;
+        Vector3 curForward = r[numSegments - 1] * Vector3.forward;
+        Vector3 desRight = Vector3.Cross(Vector3.up, curForward); // left-hand rule
+        float angle;
+        Vector3 axis;
+        Quaternion.FromToRotation(curRight, desRight).ToAngleAxis(out angle, out axis);
+        if (Vector3.Dot(curForward, axis) < 0) {
+            angle = -angle;
+        }
+        //MonoBehaviour.print(angle);
+        // now each segment rotates a fraction of the angle more until the final head is correctly rotated
+        for (int i = 0; i < numSegments; i++) {
+            r[i] *= Quaternion.AngleAxis(angle * (i + 1) / numSegments, Vector3.forward);
+        }
     }
 
     public void SetSegment(GameObject[] segments, int i) {
         segments[i].transform.position = (x[i] + x[i + 1]) / 2;
-        segments[i].transform.LookAt(x[i + 1]);
+        segments[i].transform.rotation = r[i];
     }
 
     Vector3 GetHermitePoint(float t) {
