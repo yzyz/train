@@ -44,14 +44,13 @@ public class HydraHead : MonoBehaviour {
         for (int i = 0; i < numSegments; i++) {
             //Transform parent = i > 0 ? segments[i - 1].transform : transform;
             Transform parent = transform;
-            segments[i] = Instantiate(segmentPrefab, parent.position + segmentLength * parent.forward,
-                                      parent.rotation, parent);
+            segments[i] = Instantiate(segmentPrefab, parent);
             SnakeSegment seg = segments[i].GetComponent<SnakeSegment>();
             seg.id = i;
             seg.head = this;
         }
         GameObject head = Instantiate(headPrefab, segments[numSegments-1].transform);
-        head.transform.localPosition = new Vector3(0, -0.12f, 0.3f);
+        head.transform.localPosition = new Vector3(0, 0, segmentLength);
 
         stump1 = Instantiate(stumpPrefab, transform);
         stump1.GetComponent<SnakeStump>().head = this;
