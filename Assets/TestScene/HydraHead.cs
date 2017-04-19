@@ -5,7 +5,7 @@ using UnityEngine;
 public class HydraHead : MonoBehaviour {
 
     public enum State {
-        WAITING, ATTACKING, RETREATING, REGENERATING
+        WAITING, ATTACKING, RETREATING, REGENWAIT, REGENSEGMENTS, REGENHEAD
     }
 
     public enum Status {
@@ -28,6 +28,7 @@ public class HydraHead : MonoBehaviour {
     public float tangentWeight = 5f;
 
     private GameObject[] segments;
+    private GameObject head;
     private GameObject stump1, stump2;
     private SnakeSpline ss;
     private SnakeHead snakeHead;
@@ -50,7 +51,7 @@ public class HydraHead : MonoBehaviour {
             seg.id = i;
             seg.head = this;
         }
-        GameObject head = Instantiate(headPrefab, segments[numSegments-1].transform);
+        head = Instantiate(headPrefab, segments[numSegments-1].transform);
         head.transform.localPosition = new Vector3(0, 0, segmentLength);
         head.transform.localRotation = Quaternion.identity;
         snakeHead = head.GetComponent<SnakeHead>();
@@ -81,10 +82,12 @@ public class HydraHead : MonoBehaviour {
         }
 	}
 
-    public float waitTime = 1;
-    public float attackTime = 0.3f;
-    public float retreatTime = 0.3f;
-    public float regenSegmentTime = 0.1f;
+    public static float waitTime = 1;
+    public static float attackTime = 0.3f;
+    public static float retreatTime = 0.3f;
+    public static float regenWaitTime = 3f;
+    public static float regenSegmentTime = 0.1f;
+    public static float regenHeadTime = 1f;
 
     void SetTargetObject() {
         t += Time.deltaTime;
@@ -124,36 +127,51 @@ public class HydraHead : MonoBehaviour {
             if (t > retreatTime) {
                 t = 0;
                 if (status == Status.CUT) {
-                    GameObject cutObj = segments[cut].transform.parent.gameObject;
-                    //segments[cut].transform.parent = cut > 0 ? segments[cut - 1].transform : transform;
-                    for (int i = cut; i < numSegments; i++) {
-                        segments[i].transform.parent = transform;
-                        segments[i].SetActive(false);
-                    }
-                    Destroy(cutObj);
-                    state = State.REGENERATING;
+                    state = State.REGENWAIT;
                 } else {
                     state = State.WAITING;
                 }
             }
         }
-        else if (state == State.REGENERATING) {
+        else if (state == State.REGENWAIT || state == State.REGENSEGMENTS || state == State.REGENHEAD) {
             targetObject.transform.position = waitTarget.transform.position;
             targetObject.transform.LookAt(player.transform);
-            segments[cut].SetActive(true);
-            ss.SetSegment(segments, cut);
-            Vector3 targetPos = segments[cut].transform.position;
-            Quaternion targetRot = segments[cut].transform.rotation;
-            Transform prvSeg = cut > 0 ? segments[cut - 1].transform : transform;
-            Vector3 prvSegPos = prvSeg.position;
-            Quaternion prvSegRot = prvSeg.rotation;
-            segments[cut].transform.position = Vector3.Lerp(prvSegPos, targetPos, t / regenSegmentTime);
-            segments[cut].transform.rotation = Quaternion.Slerp(prvSegRot, targetRot, t / regenSegmentTime);
-            SetStumps(segments[cut].transform, null);
-            if (t > regenSegmentTime) {
-                t = 0;
-                cut++;
-                if (cut == numSegments) {
+            if (state == State.REGENWAIT) {
+                if (t > regenWaitTime) {
+                    t = 0;
+                    GameObject cutObj = segments[cut].transform.parent.gameObject;
+                    for (int i = cut; i < numSegments; i++) {
+                        segments[i].transform.parent = transform;
+                        segments[i].SetActive(false);
+                    }
+                    head.SetActive(false);
+                    Destroy(cutObj);
+                    state = State.REGENSEGMENTS;
+                }
+            } else if (state == State.REGENSEGMENTS) {
+                segments[cut].SetActive(true);
+                ss.SetSegment(segments, cut);
+                Vector3 targetPos = segments[cut].transform.position;
+                Quaternion targetRot = segments[cut].transform.rotation;
+                Transform prvSeg = cut > 0 ? segments[cut - 1].transform : transform;
+                Vector3 prvSegPos = prvSeg.position;
+                Quaternion prvSegRot = prvSeg.rotation;
+                segments[cut].transform.position = Vector3.Lerp(prvSegPos, targetPos, t / regenSegmentTime);
+                segments[cut].transform.rotation = Quaternion.Slerp(prvSegRot, targetRot, t / regenSegmentTime);
+                SetStumps(segments[cut].transform, null);
+                if (t > regenSegmentTime) {
+                    t = 0;
+                    cut++;
+                    if (cut == numSegments) {
+                        state = State.REGENHEAD;
+                    }
+                }
+            } else if (state == State.REGENHEAD) {
+                head.SetActive(true);
+                float scale = Mathf.Lerp(0, 1, t / regenHeadTime);
+                head.transform.localScale = new Vector3(scale, scale, scale);
+                if (t > regenHeadTime) {
+                    t = 0;
                     state = State.WAITING;
                     status = Status.ALIVE;
                     SetStumps(null, null);
