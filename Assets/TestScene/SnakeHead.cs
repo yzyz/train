@@ -8,9 +8,11 @@ public class SnakeHead : MonoBehaviour {
     public float upperCloseAngle, upperOpenAngle;
     public float lowerCloseAngle, lowerOpenAngle;
 
+    private AudioSource audioSource;
+
 	// Use this for initialization
 	void Start () {
-		
+        audioSource = GetComponent<AudioSource>();
 	}
 	
 	// Update is called once per frame
@@ -24,5 +26,9 @@ public class SnakeHead : MonoBehaviour {
 
         upperJaw.transform.localRotation = Quaternion.Euler(-180, upperAngle, 0);
         lowerJaw.transform.localRotation = Quaternion.Euler(-180, lowerAngle, 0);
+    }
+
+    public void Scream() {
+        audioSource.PlayOneShot(audioSource.clip);
     }
 }

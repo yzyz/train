@@ -32,8 +32,8 @@ public class HydraHead : MonoBehaviour {
     private SnakeSpline ss;
     private SnakeHead snakeHead;
 
-    private State state;
-    private Status status;
+    public State state;
+    public Status status;
 
     int cut;
 
@@ -89,16 +89,18 @@ public class HydraHead : MonoBehaviour {
     void SetTargetObject() {
         t += Time.deltaTime;
         if (state == State.WAITING) {
+            t = 0;
             targetObject.transform.position = waitTarget.transform.position;
             targetObject.transform.LookAt(player.transform);
             snakeHead.OpenMouth(0);
+            /*
             if (t > waitTime) {
                 t = 0;
                 if (status == Status.ALIVE) {
                     state = State.ATTACKING;
                     attackTarget.transform.position = player.transform.position;
                 }
-            }
+            }*/
         }
         else if (state == State.ATTACKING) {
             targetObject.transform.position = Vector3.Lerp(waitTarget.transform.position, 
@@ -157,6 +159,15 @@ public class HydraHead : MonoBehaviour {
                     SetStumps(null, null);
                 }
             }
+        }
+    }
+
+    public void Attack() {
+        if (status == Status.ALIVE) {
+            t = 0;
+            state = State.ATTACKING;
+            attackTarget.transform.position = player.transform.position;
+            snakeHead.Scream();
         }
     }
 
