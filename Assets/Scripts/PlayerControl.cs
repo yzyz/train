@@ -5,11 +5,16 @@ using UnityEngine.SceneManagement;
 
 public class PlayerControl : MonoBehaviour {
 
+    public GameObject player;
 	public string overworld = "Overworld";
+    public int maxLives = 3;
+    public float fadeTime = 3;
+
+    private int lives;
 
 	// Use this for initialization
 	void Start () {
-		
+        lives = maxLives;
 	}
 	
 	// Update is called once per frame
@@ -18,14 +23,19 @@ public class PlayerControl : MonoBehaviour {
 	}
 
 	// Fade to black and send the player back to the Overworld
-	void Die () {
-		//TODO: fade to black
-
-		SceneManager.LoadScene (overworld);
+	public void Die () {
+        print("YOU DIED");
+        SteamVR_LoadLevel loader = player.GetComponent<SteamVR_LoadLevel>();
+        loader.levelName = overworld;
+        loader.fadeOutTime = fadeTime;
+        loader.fadeInTime = fadeTime;
+        loader.Trigger();
 	}
 
 	// Flash red
-	void Injure () {
-
+	public void Injure () {
+        print("YOU GOT HIT");
+        lives -= 1;
+        if (lives == 0) Die();
 	}
 }
