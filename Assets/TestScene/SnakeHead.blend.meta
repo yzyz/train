@@ -11,12 +11,14 @@ ModelImporter:
     100006: Lower_Jaw
     100008: Upper_Jaw
     100010: Snake_Head
+    100012: Bone
     400000: //RootNode
     400002: Armature
     400004: Cube
     400006: Lower_Jaw
     400008: Upper_Jaw
     400010: Snake_Head
+    400012: Bone
     2300000: //RootNode
     3300000: //RootNode
     4300000: Cube
