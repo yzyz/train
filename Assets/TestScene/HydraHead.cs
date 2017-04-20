@@ -82,12 +82,12 @@ public class HydraHead : MonoBehaviour {
         }
 	}
 
-    public static float waitTime = 1;
-    public static float attackTime = 0.3f;
-    public static float retreatTime = 0.3f;
-    public static float regenWaitTime = 3f;
-    public static float regenSegmentTime = 0.1f;
-    public static float regenHeadTime = 1f;
+    public float waitTime = 1;
+    public float attackTime = 0.3f;
+    public float retreatTime = 0.3f;
+    public float regenWaitTime = 3f;
+    public float regenSegmentTime = 0.1f;
+    public float regenHeadTime = 1f;
 
     void SetTargetObject() {
         t += Time.deltaTime;
@@ -106,10 +106,12 @@ public class HydraHead : MonoBehaviour {
             }*/
         }
         else if (state == State.ATTACKING) {
-            targetObject.transform.position = Vector3.Lerp(waitTarget.transform.position, 
-                                                           attackTarget.transform.position, 
-                                                           t / attackTime);
-            targetObject.transform.LookAt(attackTarget.transform);
+            float param = EaseAttack(t / attackTime);
+            targetObject.transform.position = Vector3.LerpUnclamped(waitTarget.transform.position, 
+                                                                    attackTarget.transform.position, 
+                                                                    param);
+            Quaternion attackRot = Quaternion.LookRotation(attackTarget.transform.position - waitTarget.transform.position);
+            targetObject.transform.rotation = attackRot;
             snakeHead.OpenMouth(t / attackTime);
             if (t > attackTime) {
                 t = 0;
@@ -117,12 +119,13 @@ public class HydraHead : MonoBehaviour {
             }
         }
         else if (state == State.RETREATING) {
-            targetObject.transform.position = Vector3.Lerp(attackTarget.transform.position,
-                                                           waitTarget.transform.position,
-                                                           t / retreatTime);
-            Quaternion attackRot = Quaternion.LookRotation(attackTarget.transform.position - targetObject.transform.position);
+            float param = EaseAttack(1 - t / retreatTime);
+            targetObject.transform.position = Vector3.LerpUnclamped(waitTarget.transform.position,
+                                                                    attackTarget.transform.position,
+                                                                    param);
+            Quaternion attackRot = Quaternion.LookRotation(attackTarget.transform.position - waitTarget.transform.position);
             Quaternion playerRot = Quaternion.LookRotation(player.transform.position - targetObject.transform.position);
-            targetObject.transform.rotation = Quaternion.Slerp(attackRot, playerRot, t / retreatTime);
+            targetObject.transform.rotation = Quaternion.Slerp(playerRot, attackRot, param);
             snakeHead.OpenMouth(1 - t / retreatTime);
             if (t > retreatTime) {
                 t = 0;
@@ -178,6 +181,26 @@ public class HydraHead : MonoBehaviour {
                 }
             }
         }
+    }
+
+    float EaseAttack(float t) {
+        if (t < 0) t = 0;
+        if (t > 1) t = 1;
+        float t2 = t * t;
+        float t3 = t2 * t;
+        float t4 = t3 * t;
+        float t5 = t4 * t;
+        float t6 = t5 * t;
+        float t7 = t6 * t;
+        float t8 = t7 * t;
+        return -4.8750518473098398e-001f * t
+               + 4.5264070188173147e+000f * t2
+               - 4.0821755908042114e+001f * t3
+               + 1.8034722422285620e+002f * t4
+               - 4.2097506070128566e+002f * t5
+               + 5.1175138840736878e+002f * t6
+               - 2.9101315616237736e+002f * t7
+               + 5.7872458307064427e+001f * t8;
     }
 
     public void Attack() {
