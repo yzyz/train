@@ -8,7 +8,7 @@ public class PlayerSnakeCollision : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Obstacle")) {
-            playerControl.Die();
+            playerControl.Injure();
         }
     }
 }

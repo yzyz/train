@@ -245,6 +245,9 @@ public class HydraHead : MonoBehaviour {
 		int index = (int) torchController.GetComponent<SteamVR_TrackedObject> ().index;
 		SteamVR_Controller.Input (index).TriggerHapticPulse (3999);
 		stump1.GetComponent<SnakeStump>().PlaySound("BURN");
+        stump1.transform.FindChild("BloodSprayEffect").gameObject.SetActive(false);
+        stump1.transform.FindChild("BloodStreamEffect").gameObject.SetActive(false);
+        stump1.transform.FindChild("FlamesParticleEffect").gameObject.SetActive(true);
 
         status = Status.DEAD;
     }
