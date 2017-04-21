@@ -30,6 +30,7 @@ public class HydraHead : MonoBehaviour {
     public float segmentLength = 0.05f;
     public int numSegments = 100;
     public float tangentWeight = 5f;
+    public float hapticLength = .2f;
 
     private GameObject[] segments;
     private GameObject head;
@@ -243,15 +244,15 @@ public class HydraHead : MonoBehaviour {
 
 		stump1.GetComponent<SnakeStump>().PlaySound("SLASH");
 		int index = (int) swordController.GetComponent<SteamVR_TrackedObject> ().index;
-		SteamVR_Controller.Input (index).TriggerHapticPulse (3999);
+        StartCoroutine(RunHaptics(index, Time.time));
     }
 
     public void Burn() {
-        if ((state != State.ATTACKING && state != State.RETREATING) ||
+        if ((state != State.ATTACKING && state != State.PAUSED && state != State.RETREATING) ||
             status != Status.CUT) return;
 		
 		int index = (int) torchController.GetComponent<SteamVR_TrackedObject> ().index;
-		SteamVR_Controller.Input (index).TriggerHapticPulse (3999);
+        StartCoroutine(RunHaptics(index, Time.time));
 		stump1.GetComponent<SnakeStump>().PlaySound("BURN");
         stump1.transform.FindChild("BloodSprayEffect").gameObject.SetActive(false);
         stump1.transform.FindChild("BloodStreamEffect").gameObject.SetActive(false);
@@ -277,5 +278,12 @@ public class HydraHead : MonoBehaviour {
             stump2.SetActive(true);
         }
         else stump2.SetActive(false);
+    }
+
+    IEnumerator RunHaptics(int index, float startTime) {
+        while (Time.time < startTime + hapticLength) {
+            SteamVR_Controller.Input(index).TriggerHapticPulse(400);
+            yield return null;
+        }
     }
 }

@@ -40,6 +40,7 @@ public class PlayerControl : MonoBehaviour {
 	public void Injure () {
         if (!invul) {
             print("YOU GOT HIT");
+            player.GetComponent<DamageFlashController>().Flash();
             lives -= 1;
             if (lives == 0) Die();
             invul = true;
