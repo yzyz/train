@@ -41,7 +41,7 @@ public class PlayerColliderController : MonoBehaviour {
         if (other.CompareTag("Obstacle")) {
             if (playerControl.lives > 0) {
                 print("I've been hit!");
-                scream.Play();
+                //scream.Play();
                 hit.Play();
                 flash.Flash();
                 playerControl.Injure();
