@@ -12,6 +12,9 @@ public class HydraHead : MonoBehaviour {
         DEAD, CUT, ALIVE
     }
 
+	public GameObject swordController;
+	public GameObject torchController;
+
     public GameObject segmentPrefab;
     public GameObject headPrefab;
     public GameObject stumpPrefab;
@@ -229,11 +232,19 @@ public class HydraHead : MonoBehaviour {
         }
 
         rb.velocity = 10 * segments[i].transform.forward;
+
+		stump1.GetComponent<SnakeStump>().PlaySound("SLASH");
+		int index = (int) swordController.GetComponent<SteamVR_TrackedObject> ().index;
+		SteamVR_Controller.Input (index).TriggerHapticPulse (3999);
     }
 
     public void Burn() {
         if ((state != State.ATTACKING && state != State.RETREATING) ||
             status != Status.CUT) return;
+		
+		int index = (int) torchController.GetComponent<SteamVR_TrackedObject> ().index;
+		SteamVR_Controller.Input (index).TriggerHapticPulse (3999);
+		stump1.GetComponent<SnakeStump>().PlaySound("BURN");
 
         status = Status.DEAD;
     }

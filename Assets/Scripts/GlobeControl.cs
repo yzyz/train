@@ -53,7 +53,6 @@ public class GlobeControl : MonoBehaviour {
 
 	// FixedUpdate is called once every fixed time frame
 	void FixedUpdate () {
-		print (globeState);
 		if (globeState == GlobeState.DRAGGING) {
 			SteamVR_TrackedObject trackedObj = activeController.GetComponent<SteamVR_TrackedObject> ();
 			SteamVR_Controller.Device device = SteamVR_Controller.Input ((int)trackedObj.index);
