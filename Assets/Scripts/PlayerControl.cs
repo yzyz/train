@@ -8,9 +8,9 @@ public class PlayerControl : MonoBehaviour {
     public GameObject player;
 	public string overworld = "Overworld";
     public int maxLives = 3;
-    public float fadeTime = 3;
+    public float fadeTime = 1.5f;
 
-    private int lives;
+    public int lives;
 
 	// Use this for initialization
 	void Start () {

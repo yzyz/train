@@ -3,6 +3,8 @@ using System.Collections;
 
 public class PlayerColliderController : MonoBehaviour {
 
+    public PlayerControl playerControl;
+
     public Vector3 HeadDimensions = new Vector3(0.15f, 0.25f, 0.15f);
     public AudioClip ScreamClip;
     public AudioClip HitClip;
@@ -37,10 +39,13 @@ public class PlayerColliderController : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Obstacle")) {
-            print("I've been hit!");
-            scream.Play();
-            hit.Play();
-            flash.Flash();
+            if (playerControl.lives > 0) {
+                print("I've been hit!");
+                scream.Play();
+                hit.Play();
+                flash.Flash();
+                playerControl.Injure();
+            }
 
             /*
             col.isTrigger = false;
