@@ -19,6 +19,7 @@ public class GlobeControl : MonoBehaviour {
 	public float tolerance = .1f;
 	public float maxSpeed = 1;
 	public float acceleration = .05f;
+    public ushort hapticStrength = 200;
 
 	/* Objects and Components */
 	public GlobeState globeState;
@@ -112,9 +113,10 @@ public class GlobeControl : MonoBehaviour {
 
 		SteamVR_TrackedObject trackedObj = other.GetComponentInParent<SteamVR_TrackedObject> ();
 		SteamVR_Controller.Device device = SteamVR_Controller.Input ((int)trackedObj.index);
+        SteamVR_Controller.Input((int)trackedObj.index).TriggerHapticPulse(hapticStrength);
 
-		// We're in range and we've hit the trigger
-		if (device.GetPressDown (SteamVR_Controller.ButtonMask.Trigger)) {
+        // We're in range and we've hit the trigger
+        if (device.GetPressDown (SteamVR_Controller.ButtonMask.Trigger)) {
 			// Grab our position in world space
 			Vector3 currPos = other.transform.position;
 
