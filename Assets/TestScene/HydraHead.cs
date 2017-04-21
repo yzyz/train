@@ -5,7 +5,7 @@ using UnityEngine;
 public class HydraHead : MonoBehaviour {
 
     public enum State {
-        WAITING, ATTACKING, RETREATING, REGENWAIT, REGENSEGMENTS, REGENHEAD
+        WAITING, ATTACKING, PAUSED, RETREATING, REGENWAIT, REGENSEGMENTS, REGENHEAD
     }
 
     public enum Status {
@@ -23,6 +23,7 @@ public class HydraHead : MonoBehaviour {
     public GameObject waitTarget;
     public GameObject attackTarget;
     public GameObject player;
+    public Hydra hydra;
 
     public int id;
 
@@ -85,12 +86,13 @@ public class HydraHead : MonoBehaviour {
         }
 	}
 
-    public float waitTime = 1;
-    public float attackTime = 0.3f;
-    public float retreatTime = 0.3f;
-    public float regenWaitTime = 3f;
-    public float regenSegmentTime = 0.1f;
-    public float regenHeadTime = 1f;
+    public static float waitTime = 1;
+    public static float attackTime = 0.3f;
+    public static float pausedTime = 0.1f;
+    public static float retreatTime = 0.3f;
+    public static float regenWaitTime = 3f;
+    public static float regenSegmentTime = 0.1f;
+    public static float regenHeadTime = 1f;
 
     void SetTargetObject() {
         t += Time.deltaTime;
@@ -117,6 +119,12 @@ public class HydraHead : MonoBehaviour {
             targetObject.transform.rotation = attackRot;
             snakeHead.OpenMouth(t / attackTime);
             if (t > attackTime) {
+                t = 0;
+                state = State.PAUSED;
+            }
+        }
+        else if (state == State.PAUSED) {
+            if (t > pausedTime) {
                 t = 0;
                 state = State.RETREATING;
             }
@@ -250,6 +258,7 @@ public class HydraHead : MonoBehaviour {
         stump1.transform.FindChild("FlamesParticleEffect").gameObject.SetActive(true);
 
         status = Status.DEAD;
+        hydra.LoseHead();
     }
 
     void SetStumps(Transform par1, Transform par2) {

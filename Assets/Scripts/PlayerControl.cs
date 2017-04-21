@@ -9,8 +9,12 @@ public class PlayerControl : MonoBehaviour {
 	public string overworld = "Overworld";
     public int maxLives = 3;
     public float fadeTime = 1.5f;
+    public float invulTime = 3f;
 
     public int lives;
+
+    private float setTime;
+    private bool invul = false;
 
 	// Use this for initialization
 	void Start () {
@@ -34,8 +38,14 @@ public class PlayerControl : MonoBehaviour {
 
 	// Flash red
 	public void Injure () {
-        print("YOU GOT HIT");
-        lives -= 1;
-        if (lives == 0) Die();
+        if (!invul) {
+            print("YOU GOT HIT");
+            lives -= 1;
+            if (lives == 0) Die();
+            invul = true;
+            setTime = Time.time;
+        } else if (Time.time > setTime + invulTime) {
+            invul = false;
+        }
 	}
 }
