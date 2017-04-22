@@ -38,6 +38,9 @@ public class PlayerControl : MonoBehaviour {
 
 	// Flash red
 	public void Injure () {
+        if (invul && Time.time > setTime + invulTime)
+            invul = false;
+
         if (!invul) {
             print("YOU GOT HIT");
             player.GetComponent<DamageFlashController>().Flash();
@@ -45,8 +48,6 @@ public class PlayerControl : MonoBehaviour {
             if (lives == 0) Die();
             invul = true;
             setTime = Time.time;
-        } else if (Time.time > setTime + invulTime) {
-            invul = false;
         }
 	}
 }

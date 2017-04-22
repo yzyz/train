@@ -53,6 +53,7 @@ public class HydraHead : MonoBehaviour {
             //Transform parent = i > 0 ? segments[i - 1].transform : transform;
             Transform parent = transform;
             segments[i] = Instantiate(segmentPrefab, parent);
+            segments[i].transform.localScale = new Vector3(1, 1, 1);
             SnakeSegment seg = segments[i].GetComponent<SnakeSegment>();
             seg.id = i;
             seg.head = this;
@@ -60,6 +61,7 @@ public class HydraHead : MonoBehaviour {
         head = Instantiate(headPrefab, segments[numSegments-1].transform);
         head.transform.localPosition = new Vector3(0, 0, (oldSegmentLength + segmentLength) / 2);
         head.transform.localRotation = Quaternion.identity;
+        head.transform.localScale = new Vector3(1, 1, 1);
         snakeHead = head.GetComponent<SnakeHead>();
 
         stump1 = Instantiate(stumpPrefab, transform);

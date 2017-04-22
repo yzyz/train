@@ -8,6 +8,8 @@ public class SnakeHead : MonoBehaviour {
     public float upperCloseAngle, upperOpenAngle;
     public float lowerCloseAngle, lowerOpenAngle;
 
+    public AudioClip[] audioClips;
+
     private AudioSource audioSource;
 
 	// Use this for initialization
@@ -29,6 +31,7 @@ public class SnakeHead : MonoBehaviour {
     }
 
     public void Scream() {
-        audioSource.PlayOneShot(audioSource.clip);
+        audioSource.PlayOneShot(audioClips[Random.Range(0, audioClips.Length)]);
+        //audioSource.PlayOneShot(audioSource.clip);
     }
 }

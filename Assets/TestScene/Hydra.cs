@@ -27,9 +27,14 @@ public class Hydra : MonoBehaviour {
     // Remove a head
     public void LoseHead() {
         headsLeft -= 1;
-        LoadLevel(heads.Length - headsLeft + 1);
+        
         if (headsLeft == 0) {
+            print("victory is yours wooeoeoe");
             setTime = Time.time;
+        
+        }
+        else {
+            LoadLevel(heads.Length - headsLeft + 1);
         }
     }
 
@@ -88,6 +93,7 @@ public class Hydra : MonoBehaviour {
             }
         } else {
             if (Time.time > setTime + victoryTime) {
+                print("LEAVING");
                 scriptManager.GetComponent<PlayerControl>().Die();
             }
         }
