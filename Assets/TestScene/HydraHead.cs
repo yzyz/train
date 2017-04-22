@@ -27,6 +27,7 @@ public class HydraHead : MonoBehaviour {
 
     public int id;
 
+    public float oldSegmentLength = 0.05f;
     public float segmentLength = 0.05f;
     public int numSegments = 100;
     public float tangentWeight = 5f;
@@ -57,7 +58,7 @@ public class HydraHead : MonoBehaviour {
             seg.head = this;
         }
         head = Instantiate(headPrefab, segments[numSegments-1].transform);
-        head.transform.localPosition = new Vector3(0, 0, segmentLength);
+        head.transform.localPosition = new Vector3(0, 0, (oldSegmentLength + segmentLength) / 2);
         head.transform.localRotation = Quaternion.identity;
         snakeHead = head.GetComponent<SnakeHead>();
 
@@ -265,7 +266,7 @@ public class HydraHead : MonoBehaviour {
     void SetStumps(Transform par1, Transform par2) {
         if (par1 != null) {
             stump1.transform.parent = par1; //cut > 0 ? segments[cut - 1].transform : transform;
-            stump1.transform.localPosition = segmentLength * Vector3.forward;
+            stump1.transform.localPosition = (oldSegmentLength + segmentLength) / 2 * Vector3.forward;
             stump1.transform.localRotation = Quaternion.identity;
             stump1.SetActive(true);
         }
@@ -273,7 +274,7 @@ public class HydraHead : MonoBehaviour {
 
         if (par2 != null) {
             stump2.transform.parent = par2; //segments[cut].transform;
-            stump2.transform.localPosition = -segmentLength * Vector3.forward;
+            stump2.transform.localPosition = -(oldSegmentLength + segmentLength) / 2 * Vector3.forward;
             stump2.transform.localRotation = Quaternion.Euler(0, 180, 0);
             stump2.SetActive(true);
         }

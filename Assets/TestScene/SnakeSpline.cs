@@ -34,7 +34,7 @@ public class SnakeSpline {
         for (int i = numSegments-1; i >= 0; i--) {
             // find t[i] such that Dist(x[i], x[i+1]) = segmentLength
             float lo = 0, hi = t[i + 1];
-            for (int it = 0; it < 20; it++) {
+            for (int it = 0; it < 10; it++) {
                 t[i] = (lo + hi) / 2;
                 x[i] = GetHermitePoint(t[i]);
                 if (Vector3.Distance(x[i], x[i+1]) > segmentLength) lo = t[i];
